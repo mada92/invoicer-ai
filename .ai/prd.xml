@@ -1,0 +1,215 @@
+<prd title="Product Requirements Document (PRD) - Invoicer AI">
+    <productOverview>
+        <paragraph>
+            Invoicer AI is a web application designed to streamline the invoice creation process using voice commands. The application targets users who need a quick and convenient way to generate invoices in situations where manual data entry is difficult or impossible (e.g., working in the field, driving). The Minimum Viable Product (MVP) version will be available as a web application exclusively in desktop view. The goal is to enable users to dictate invoice data, which is then automatically transcribed, interpreted by AI (using OpenAI Whisper and gpt-4o-mini), and saved in a system linked to the user's account (authenticated via Supabase Auth). The application also integrates with the GUS API (Polish Central Statistical Office) to verify contractor data.
+        </paragraph>
+    </productOverview>
+
+    <userProblem>
+        <paragraph>
+            The main problem Invoicer AI solves is the challenge associated with manually creating invoices using traditional forms. This can be inconvenient or impossible in situations requiring hands-free operation (e.g., while driving, working on-site with a client). The primary objective is to allow users to generate invoices quickly and efficiently using voice commands, eliminating the need for manual data entry on small screens or in uncomfortable conditions.
+        </paragraph>
+    </userProblem>
+
+    <functionalRequirements>
+        <requirement id="3.1" title="Voice Invoice Creation">
+            <description>The MVP application will have the following functionalities for voice invoice creation:</description>
+            <feature id="3.1.1" description="Allow the user to start and stop recording a voice command in a dedicated interface (modal)."/>
+            <feature id="3.1.2" description="Transcribe speech to text using the OpenAI Whisper API (for the Polish language)."/>
+            <feature id="3.1.3" description="Interpret the transcribed text using the OpenAI gpt-4o-mini API with function calling to extract data according to a predefined JSON schema."/>
+            <jsonSchema>
+                <description>JSON schema for extraction:</description>
+                <field name="recipient" type="object">
+                    <property name="name" required="true" type="string"/>
+                    <property name="address" required="false" type="string"/>
+                    <property name="tax_id" required="false" type="string" description="NIP (Polish Tax ID)"/>
+                </field>
+                <field name="items" type="array">
+                    <item type="object">
+                        <property name="name" required="true" type="string"/>
+                        <property name="quantity" required="true" type="number"/>
+                        <property name="unit_price_gross" required="true" type="number" description="Gross unit price"/>
+                    </item>
+                </field>
+                <field name="issue_date" type="date" default="current_date" description="Issue date (if not provided, the current date is used)."/>
+                <field name="sale_date" type="date" default="issue_date" description="Sale date (defaults to issue_date if not specified otherwise)."/>
+                <field name="due_date" type="date" default="issue_date + 14 days" description="Payment due date (defaults to issue_date + 14 days if not specified otherwise)."/>
+                <field name="payment_status" type="string" default="unpaid" description="Payment status (defaults to 'unpaid')."/>
+                <field name="unit" type="string" default="pcs." description="Unit of measure (defaults to 'pcs.', AI tries to infer from context, e.g., 'hour', 'service')."/>
+            </jsonSchema>
+            <detail id="3.1.sender_data" description="Sender data is retrieved from the user profile and is not expected from the AI."/>
+            <detail id="3.1.ai_constraints" description="The AI should not invent data that was not provided in the voice command (e.g., address, Tax ID, if not dictated)."/>
+            <subRequirement id="3.1.recipient_verification" title="Recipient Verification">
+                <point description="The system checks if a contractor with the given name exists in the user's internal database (future feature, skipped for now)."/>
+                <point description="If not, the system queries the GUS API by the contractor's name."/>
+                <point description="If results are found in GUS, the system retrieves the data (Tax ID, address) of the first matching record."/>
+                <point description="If GUS returns no results or the AI did not extract the name, the invoice is saved without full recipient data (only with the name, if provided)."/>
+            </subRequirement>
+            <subRequirement id="3.1.calculations" title="Calculations">
+                <point description="The net amount for each item is calculated based on the provided gross amount and the default VAT rate from the user's profile."/>
+                <point description="Rounding to 2 decimal places is applied to all financial values."/>
+                <point description="The system calculates the total net, VAT, and gross amounts for the entire invoice."/>
+            </subRequirement>
+            <subRequirement id="3.1.invoice_saving" title="Invoice Saving">
+                <point description="Minimum data required to save an invoice: sender data (from profile), issue date, at least one item with name, quantity, and gross price."/>
+                <point description="The invoice is saved in the Supabase database associated with the logged-in user."/>
+                <point description="A unique invoice number is assigned (e.g., sequential within the user's account)."/>
+                <point description="No strict validation of required fields in the database for optional data (e.g., recipient's Tax ID, address) to allow saving even with incomplete data from AI/GUS."/>
+            </subRequirement>
+        </requirement>
+
+        <requirement id="3.2" title="Invoice Management">
+            <feature id="3.2.1" title="Invoice List" description="Display a list of invoices created by the logged-in user, sorted by default from the newest. The list should contain basic information (e.g., invoice number, recipient name, issue date, gross amount, payment status)."/>
+            <feature id="3.2.2" title="Invoice Details View" description="Ability to click on an invoice in the list to display all its details (sender data, recipient data, items, dates, amounts, payment status)."/>
+        </requirement>
+
+        <requirement id="3.3" title="User Profile Management">
+            <feature id="3.3.1" title="Profile Section" description="A dedicated section in the application where the user can enter and save:">
+                <point>Their company details: Name, Address, Tax ID (NIP).</point>
+                <point>Bank account number.</point>
+                <point>VAT payer status (e.g., Yes/No).</point>
+                <point>Default VAT rate (e.g., 23%, 8%, EXEMPT).</point>
+            </feature>
+            <feature id="3.3.2" title="Data Usage" description="This data is used to automatically populate the sender details on invoices."/>
+        </requirement>
+
+        <requirement id="3.4" title="User Authentication">
+            <feature id="3.4.1" description="Registration of new users (e.g., email/password)."/>
+            <feature id="3.4.2" description="Login for existing users."/>
+            <feature id="3.4.3" description="Use Supabase Auth for session management and security."/>
+        </requirement>
+
+        <requirement id="3.5" title="User Interface (UI)">
+            <feature id="3.5.1" description="Invoice list view with a clear 'Issue' (or similar) button initiating the voice invoice creation process."/>
+            <feature id="3.5.2" description="Invoice details view presenting all data clearly."/>
+            <feature id="3.5.3" description="Modal for voice input, showing recording status."/>
+            <feature id="3.5.4" description="Visual progress indicator during voice command processing (e.g., stages: Transcription, AI Analysis, Recipient Verification, Saving)."/>
+            <feature id="3.5.5" description="Warning icon in the invoice list and/or details view for invoices saved with potentially incomplete data (e.g., missing recipient Tax ID after failed GUS verification)."/>
+            <feature id="3.5.6" description="User profile section with a form for editing data."/>
+            <feature id="3.5.7" description="Interface available exclusively in desktop view."/>
+        </requirement>
+
+        <requirement id="3.6" title="Event Logging">
+            <feature id="3.6.1" description="Text transcriptions of voice commands will be logged solely for debugging and system quality monitoring purposes. GDPR compliance must be ensured (unresolved issue, requires legal analysis)."/>
+        </requirement>
+    </functionalRequirements>
+
+    <productBoundaries>
+        <heading>The following functionalities are intentionally excluded from the MVP scope and will not be implemented in the first version of the product:</heading>
+        <excludedFeatures>
+            <feature>Generating and previewing invoices in PDF format.</feature>
+            <feature>Ability to modify (edit) existing invoices using a standard user interface.</feature>
+            <feature>Ability to delete existing invoices.</feature>
+            <feature>Functionality to send invoices directly to clients (e.g., via email) from within the application.</feature>
+            <feature>Generating financial summaries, reports, or analyses based on invoice data using AI.</feature>
+            <feature>Multi-currency support – MVP supports PLN only.</feature>
+            <feature>Responsive user interface / mobile view.</feature>
+            <feature>Saving and managing a user's contractor database (beyond basic name verification in GUS).</feature>
+            <feature>Advanced invoicing options (e.g., proforma invoices, corrections, credit notes, split payment mechanism).</feature>
+        </excludedFeatures>
+    </productBoundaries>
+
+    <userStories>
+        <userStory id="US-001">
+            <title>Voice creation of a new invoice (main path)</title>
+            <description>As a logged-in user, I want to be able to dictate the data for a new invoice using a voice command, so that I can quickly and conveniently create the document without manual typing.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">After clicking the 'Issue' button, a modal appears allowing voice recording to start.</criterion>
+                <criterion id="AC.2">After starting recording, the system captures audio.</criterion>
+                <criterion id="AC.3">After stopping recording, the system displays a progress indicator showing processing stages (Transcription, Analysis, Verification, Saving).</criterion>
+                <criterion id="AC.4">The system sends the recording to the Whisper API for transcription to text.</criterion>
+                <criterion id="AC.5">The system sends the transcription to the gpt-4o-mini API for data extraction according to the defined JSON schema.</criterion>
+                <criterion id="AC.6">The system attempts to verify the recipient's name in the GUS API.</criterion>
+                <criterion id="AC.7">The system retrieves sender data (from profile) and the default VAT rate.</criterion>
+                <criterion id="AC.8">The system calculates net, VAT, and gross amounts for items and the entire invoice.</criterion>
+                <criterion id="AC.9">The system saves the new invoice in the database with a unique number and data (including GUS verification results).</criterion>
+                <criterion id="AC.10">The newly created invoice appears at the top of the invoice list.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-002">
+            <title>Displaying the invoice list</title>
+            <description>As a logged-in user, I want to see a list of all my created invoices, so that I have an overview of my invoicing history.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">After logging in, my invoice list is displayed by default.</criterion>
+                <criterion id="AC.2">The list is sorted from the newest to the oldest invoice by issue date.</criterion>
+                <criterion id="AC.3">Each item on the list includes at least: invoice number, recipient name, issue date, gross amount, and payment status.</criterion>
+                <criterion id="AC.4">An 'Issue' button is visible, allowing the addition of a new invoice.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-003">
+            <title>Displaying invoice details</title>
+            <description>As a logged-in user, I want to be able to click on an invoice in the list to see all its details.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">Clicking on any invoice in the list navigates to the details view for that invoice.</criterion>
+                <criterion id="AC.2">The details view displays all saved information: full sender details (from profile), full recipient details (including Tax ID/address, if available), issue date, sale date, due date, payment status, all invoice items (name, quantity, unit, gross unit price, VAT rate, net amount, VAT amount, gross amount), summary (total net, total VAT, total gross).</criterion>
+                <criterion id="AC.3">If the invoice was saved with incomplete data (e.g., missing recipient Tax ID), an appropriate marker/warning is visible in the details view.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-004">
+            <title>User profile management</title>
+            <description>As a logged-in user, I want to be able to enter and update my company details, bank account number, VAT status, and default VAT rate in my profile, so that they are automatically used when issuing invoices.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">A 'Profile' or 'Settings' section is available in the application.</criterion>
+                <criterion id="AC.2">The profile section contains a form allowing entry/editing of: Company Name, Company Address, Company Tax ID (NIP), Bank Account Number, VAT Payer Status, Default VAT Rate.</criterion>
+                <criterion id="AC.3">After filling/changing data and clicking 'Save', the changes are saved in the database associated with my account.</criterion>
+                <criterion id="AC.4">The updated profile data is used the next time an invoice is created.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-005">
+            <title>New user registration</title>
+            <description>As a new user, I want to be able to create an account in the application using my email address and password, so that I can start creating and saving invoices.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">A 'Register' option is available on the login page.</criterion>
+                <criterion id="AC.2">The registration form requires entering an email address and password (with confirmation).</criterion>
+                <criterion id="AC.3">After correctly filling and submitting the form, a new user account is created in Supabase.</criterion>
+                <criterion id="AC.4">The user is automatically logged in and redirected to the invoice list view (or a welcome/profile completion page).</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-006">
+            <title>Existing user login</title>
+            <description>As a registered user, I want to be able to log in to the application using my email address and password, so that I can access my invoices and application features.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">The application presents a login form by default (or a link to it).</criterion>
+                <criterion id="AC.2">The form requires entering the registered email address and password.</criterion>
+                <criterion id="AC.3">After entering correct credentials and clicking 'Login', the system verifies the credentials in Supabase.</criterion>
+                <criterion id="AC.4">Upon successful verification, the user is logged in and redirected to the invoice list view.</criterion>
+                <criterion id="AC.5">If incorrect credentials are provided, a login error message is displayed.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-007">
+            <title>Handling incomplete data from AI/GUS</title>
+            <description>As a user creating an invoice by voice, I want the system to save the invoice even if the AI doesn't extract all data (e.g., recipient's Tax ID) or if the GUS verification fails, but I want to be informed about it.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">When the AI cannot extract the recipient's name from the voice command, the invoice is saved without recipient data (other than the sender's profile data).</criterion>
+                <criterion id="AC.2">When the AI extracts the name, but GUS verification does not return a Tax ID/address (or there are no results), the invoice is saved only with the recipient's name (and any data from the command).</criterion>
+                <criterion id="AC.3">Invoices saved with incomplete data (missing recipient Tax ID/address, although the name is present) are marked with a warning icon in the invoice list.</criterion>
+                <criterion id="AC.4">A warning about potentially incomplete data is visible in the details view of such an invoice.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+        <userStory id="US-008">
+            <title>User logout</title>
+            <description>As a logged-in user, I want to be able to log out of the application to end my session.</description>
+            <acceptanceCriteria>
+                <criterion id="AC.1">A 'Logout' button or option is available in the application interface.</criterion>
+                <criterion id="AC.2">After clicking 'Logout', my user session is terminated.</criterion>
+                <criterion id="AC.3">I am redirected to the login page.</criterion>
+            </acceptanceCriteria>
+        </userStory>
+    </userStories>
+
+    <successMetrics>
+        <metric id="6.1" name="Adoption">
+            <goal>Target: Minimum 80% of registered users create at least one invoice using the application.</goal>
+            <measurement>Measurement: Analysis of usage data in the Supabase database – counting unique users who have saved at least one invoice.</measurement>
+        </metric>
+        <metric id="6.2" name="Retention / Regular Usage">
+            <goal>Target: Minimum 50% of registered users create at least one invoice per month.</goal>
+            <measurement>Measurement: Analysis of usage data in the Supabase database – tracking the monthly active user base (defined as users creating invoices) relative to the total number of registered users.</measurement>
+        </metric>
+        <additionalMonitoring>
+            <point>Quality of transcription and data extraction by AI (through log analysis and potential satisfaction surveys).</point>
+            <point>Percentage of invoices saved with incomplete data (to assess the effectiveness of AI and GUS integration).</point>
+            <point>User feedback regarding ease of use and overall satisfaction.</point>
+        </additionalMonitoring>
+    </successMetrics>
+</prd>

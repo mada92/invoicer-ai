@@ -1,0 +1,49 @@
+<tech-stack>
+    <frontend>
+        <description>
+            Frontend - Angular (latest stable version) as a comprehensive framework for building the user interface:
+            - Angular will provide a solid structure for a Single Page Application (SPA) thanks to its component-based architecture.
+            - Use of TypeScript (required by Angular) for static typing, which increases code safety and facilitates teamwork and refactoring.
+            - Built-in routing and state management mechanisms (e.g., Signals or NgRx) will facilitate the creation of complex views and data flows.
+            - Ability to use UI component libraries like Angular Material or PrimeNG for quickly building a consistent and aesthetic interface.
+            - Rich ecosystem and CLI tools (Angular CLI) accelerating development and application building.
+        </description>
+    </frontend>
+
+    <backend>
+        <description>
+            Backend - Supabase as a comprehensive Backend-as-a-Service (BaaS) platform:
+            - Supabase will provide ready-made backend solutions, significantly accelerating development:
+            - High-performance PostgreSQL database.
+            - Ready-made user authentication and authorization system (Supabase Auth - according to PRD requirements).
+            - API for database interaction (REST, GraphQL, SDK for JavaScript/TypeScript).
+            - Option for hosting on Supabase Cloud (recommended) or self-hosting for greater control.
+            - **Supabase Edge Functions** (written in TypeScript/Deno) will be used to implement custom business logic and server-side tasks:
+            - Orchestration of the voice invoice creation process (integration with OpenAI Whisper and GPT).
+            - Integration with external APIs (e.g., GUS API for contractor verification).
+            - Performing server-side calculations (e.g., summing values on an invoice).
+            - Providing a secure proxy for API calls requiring keys/secrets.
+            - This approach unifies the backend within a single platform, simplifying the architecture, potentially reducing costs, and facilitating management.
+        </description>
+    </backend>
+
+    <ai>
+        <description>
+            AI - Integration with OpenAI language models:
+            - Access to advanced AI models (according to PRD: Whisper for transcription, gpt-4o-mini for data extraction) via the official OpenAI API.
+            - Will enable the implementation of the key functionality of voice invoice creation.
+            - OpenAI API calls will be securely executed on the backend side, within Supabase Edge Functions.
+            - Well-documented API facilitating integration.
+            - Ability to customize models for specific tasks (fine-tuning, if needed in the future).
+        </description>
+    </ai>
+
+    <cicd_hosting>
+        <description>
+            CI/CD and Hosting (Example simplified configuration):
+            - Github Actions / GitLab CI: For automating the processes of testing, building, and deployment (for the frontend application and Supabase Edge Functions).
+            - Vercel / Netlify / AWS S3+CloudFront: For hosting static files of the frontend application (Angular).
+            - Supabase Cloud: For hosting the database, BaaS services (Auth), and executing Edge Functions. Eliminates the need for separate hosting for backend logic.
+        </description>
+    </cicd_hosting>
+</tech-stack>

@@ -1,0 +1,38 @@
+<mvp_description application_name="Invoicer AI">
+
+    <section title="Core Problem">
+        <problem_statement>
+            Addresses the challenge of manually creating invoices using traditional forms, which can be inconvenient or impossible in situations where hands-free operation is needed (e.g., while driving, working on-site). The core goal is to enable users to generate invoices quickly and efficiently using voice commands.
+        </problem_statement>
+    </section>
+
+    <section title="Minimum Viable Feature Set">
+        <features>
+            <feature>Invoice List: Displaying a list of the user's created invoices.</feature>
+            <feature>Invoice Details View: Ability to view the specific details of a selected invoice.</feature>
+            <feature>Add Invoice (Voice-Powered): The core feature allowing users to dictate invoice details. This includes AI integration for speech-to-text transcription and, ideally, parsing the spoken input into a structured invoice format ready for saving.</feature>
+            <feature>Basic User Accounts: Simple registration and login functionality to securely store and associate invoices with individual users.</feature>
+            <feature>User Profile Management: A dedicated section where users can indicate their VAT status, and save their company details (name, address, tax ID) and bank account number to be automatically included on generated invoices.</feature>
+            <feature>AI Integration for Transcription/Parsing: The underlying technology that converts voice input into text and structures it into invoice data fields.</feature>
+        </features>
+    </section>
+
+    <section title="Out of Scope for MVP">
+        <exclusions>
+            <exclusion>PDF Generation/Preview: Generating or viewing invoices as PDF files.</exclusion>
+            <exclusion>Modify Invoice: Ability to edit the details of existing invoices (likely via a standard user interface).</exclusion>
+            <exclusion>Delete Invoice: Ability to remove existing invoices (likely via a standard user interface).</exclusion>
+            <exclusion>Invoice Sending: Functionality to send invoices directly to clients via email or other methods from within the app.</exclusion>
+            <exclusion>AI-Powered Summaries: Using AI to generate financial reports, summaries, or analytics based on invoice data.</exclusion>
+            <exclusion>Multi-Currency Support: Creating or managing invoices in foreign currencies.</exclusion>
+        </exclusions>
+    </section>
+
+    <section title="Success Criteria">
+        <criteria>
+            <criterion>Initial Adoption: At least 80% of registered users successfully create one or more invoices through the application.</criterion>
+            <criterion>Regular Usage/Retention: At least 50% of registered users consistently create a minimum of one invoice per month.</criterion>
+        </criteria>
+    </section>
+
+</mvp_description>
