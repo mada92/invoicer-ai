@@ -1,0 +1,166 @@
+/* Importuj istniejące style, jeśli są w osobnym pliku, lub wklej je tutaj */
+/* Przykładowe style dla lepszego wyglądu formularza - dostosuj wg potrzeb */
+.form-group {
+  margin-bottom: 1rem; /* Odstęp między polami */
+}
+
+label {
+  display: block;
+  margin-bottom: 0.5rem; /* Odstęp pod etykietą */
+  font-weight: bold; /* Pogrubiona etykieta */
+  color: #333; /* Ciemniejszy kolor etykiety */
+}
+
+.form-control {
+  display: block;
+  padding: 0.5rem 0.75rem; /* Trochę większy padding */
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #495057;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #ced4da;
+  border-radius: 0.3rem; /* Lekko zaokrąglone rogi */
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+  border-color: #80bdff;
+  outline: 0;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Podświetlenie przy fokusie */
+}
+
+
+.form-control.is-invalid {
+  border-color: #dc3545; /* Czerwona ramka dla błędnych pól */
+}
+
+.invalid-feedback {
+  display: none; /* Ukryte domyślnie */
+  width: 100%; /* Dopasowane do inputa (który ma 50%) */
+  margin-top: 0.25rem;
+  font-size: 0.8rem; /* Mniejsza czcionka błędu */
+  color: #dc3545; /* Czerwony kolor tekstu błędu */
+}
+
+.form-control.is-invalid ~ .invalid-feedback {
+  display: block; /* Pokaż komunikat błędu, jeśli pole jest niepoprawne */
+}
+
+.btn {
+  display: inline-block;
+  font-weight: 400;
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  border: 1px solid transparent;
+  padding: 0.5rem 1rem; /* Większy padding przycisku */
+  font-size: 1rem;
+  line-height: 1.5;
+  border-radius: 0.3rem;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  cursor: pointer; /* Kursor dłoni */
+}
+
+.btn-primary {
+  color: #fff;
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3; /* Ciemniejszy przy najechaniu */
+  border-color: #0056b3;
+}
+
+
+.btn-primary:disabled {
+  color: #fff;
+  background-color: #6c757d;
+  border-color: #6c757d;
+  cursor: not-allowed; /* Kursor wskazujący brak możliwości kliknięcia */
+  opacity: 0.65;
+}
+
+.alert {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.25rem;
+}
+
+.alert-danger {
+  color: #721c24;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+}
+
+.mt-3 {
+  margin-top: 1rem !important;
+}
+
+/* === NOWE STYLE === */
+
+.login-container {
+  display: flex; /* Włącz flexbox */
+  flex-direction: column; /* Elementy (nagłówek, formularz) w kolumnie */
+  justify-content: center; /* Wyśrodkuj w pionie */
+  align-items: center; /* Wyśrodkuj w poziomie */
+  min-height: 80vh; /* Minimalna wysokość, aby centrowanie miało sens (dostosuj wg potrzeb) */
+  padding: 2rem; /* Odstęp od krawędzi */
+}
+
+.login-container h2 {
+  text-align: center; /* Wyśrodkuj tekst nagłówka */
+  margin-bottom: 2rem; /* Większy odstęp pod nagłówkiem */
+  color: #333;
+}
+
+.login-container form {
+  width: 100%; /* Formularz zajmuje dostępną szerokość kontenera */
+  max-width: 450px; /* Maksymalna szerokość formularza */
+  padding: 2rem; /* Wewnętrzny odstęp formularza */
+  background-color: #f8f9fa; /* Jasne tło formularza */
+  border: 1px solid #dee2e6; /* Delikatna ramka */
+  border-radius: 0.5rem; /* Zaokrąglone rogi */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtelny cień */
+}
+
+/* Wyśrodkowanie zawartości grup formularza i ograniczenie szerokości inputów */
+.login-container .form-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Wyśrodkuj elementy w grupie (label, input, feedback) */
+  margin-bottom: 1.5rem; /* Zwiększony odstęp */
+}
+
+.login-container .form-group label {
+  width: 50%; /* Etykieta zajmuje 50% szerokości */
+  text-align: left; /* Wyrównaj tekst etykiety do lewej */
+  margin-bottom: 0.5rem;
+}
+
+.login-container .form-group .form-control {
+  width: 50%; /* Input zajmuje 50% szerokości */
+}
+
+.login-container .form-group .invalid-feedback {
+  width: 50%; /* Komunikat błędu zajmuje 50% szerokości */
+  text-align: center; /* Wyśrodkuj tekst błędu */
+}
+
+/* Wyśrodkowanie ogólnego komunikatu błędu */
+.login-container .error-message {
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+
+/* Wyśrodkowanie i ograniczenie szerokości przycisku */
+.login-container button[type="submit"] {
+  display: block; /* Przycisk jako blok, by margin zadziałał */
+  width: 50%; /* Szerokość przycisku 50% */
+  margin: 1.5rem auto 0; /* Górny margines i auto po bokach dla wyśrodkowania */
+}

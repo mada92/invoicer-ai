@@ -1,0 +1,47 @@
+<div class="login-container">
+  <h2>Logowanie</h2>
+
+  <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
+    <div class="form-group">
+      <label for="username">Login:</label>
+      <input
+        type="text"
+        id="username"
+        name="username"
+        [(ngModel)]="loginData.username"
+        required
+        #usernameInput="ngModel"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': usernameInput.invalid && (usernameInput.dirty || usernameInput.touched) }"
+        placeholder="Wprowadź login">
+      <div *ngIf="usernameInput.invalid && (usernameInput.dirty || usernameInput.touched)" class="invalid-feedback">
+        Login jest wymagany.
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="password">Hasło:</label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        [(ngModel)]="loginData.password"
+        required
+        #passwordInput="ngModel"
+        class="form-control"
+        [ngClass]="{ 'is-invalid': passwordInput.invalid && (passwordInput.dirty || passwordInput.touched) }"
+        placeholder="Wprowadź hasło">
+      <div *ngIf="passwordInput.invalid && (passwordInput.dirty || passwordInput.touched)" class="invalid-feedback">
+        Hasło jest wymagane.
+      </div>
+    </div>
+
+    <div *ngIf="errorMessage" class="alert alert-danger mt-3 error-message">
+      {{ errorMessage }}
+    </div>
+
+    <button type="submit" [disabled]="loginForm.invalid" class="btn btn-primary mt-3">
+      Zaloguj się
+    </button>
+  </form>
+</div>
