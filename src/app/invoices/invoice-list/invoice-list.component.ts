@@ -14,4 +14,14 @@ export class InvoiceListComponent {
     { id: 2, number: 'FV/2024/002', amount: 2000 },
     { id: 3, number: 'FV/2024/003', amount: 1500 }
   ];
+
+  selectedInvoice: { id: number; number: string; amount: number } | null = null;
+
+  openInvoiceDetails(invoice: { id: number; number: string; amount: number }): void {
+    this.selectedInvoice = invoice;
+  }
+
+  closeDialog(): void {
+    this.selectedInvoice = null;
+  }
 }
