@@ -4,7 +4,7 @@ import { PublicLayoutComponent } from './layouts/public-layout/public-layout.com
 import { PrivateLayoutComponent } from './layouts/private-layout/private-layout.component';
 // Zaimportuj inne komponenty, które będą wewnątrz private layoutu
 // import { DashboardComponent } from './dashboard/dashboard.component';
-// import { InvoiceListComponent } from './invoices/invoice-list/invoice-list.component';
+import { InvoiceListComponent } from './invoices/invoice-list/invoice-list.component';
 
 // Zaimportuj strażnika (guard), który będzie chronił trasy prywatne (stworzymy go później)
 // import { authGuard } from './auth/auth.guard';
@@ -29,10 +29,17 @@ export const routes: Routes = [
     // canActivate: [authGuard], // Dodaj strażnika (guard) do ochrony tych tras
     children: [
       // { path: 'dashboard', component: DashboardComponent },
-      // { path: 'invoices', component: InvoiceListComponent },
       // ... inne trasy prywatne
       // Domyślna trasa po zalogowaniu
       // { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    ]
+  },
+
+  {
+    path: 'invoices',
+    component: PrivateLayoutComponent,
+    children: [
+      { path: '', component: InvoiceListComponent }
     ]
   },
 

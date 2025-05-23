@@ -17,8 +17,6 @@ export class LoginComponent {
   };
   errorMessage: string | null = null;
 
-  constructor() { }
-
   onSubmit(): void {
     this.errorMessage = null;
     console.log('Próba logowania z danymi:', this.loginData);
