@@ -5,6 +5,9 @@
       <thead class="bg-indigo-600 text-white">
         <tr>
           <th class="px-4 py-2 text-left">Numer</th>
+          <th class="px-4 py-2 text-left">Kontrahent</th>
+          <th class="px-4 py-2 text-left">Data wystawienia</th>
+          <th class="px-4 py-2 text-left">Termin płatności</th>
           <th class="px-4 py-2 text-left">Kwota</th>
         </tr>
       </thead>
@@ -15,6 +18,9 @@
               {{ invoice.number }}
             </a>
           </td>
+          <td class="px-4 py-2">{{ invoice.contractor }}</td>
+          <td class="px-4 py-2">{{ invoice.issueDate }}</td>
+          <td class="px-4 py-2">{{ invoice.dueDate }}</td>
           <td class="px-4 py-2">{{ invoice.amount | currency:'PLN':'symbol' }}</td>
         </tr>
       </tbody>
@@ -26,6 +32,9 @@
   <div class="bg-white p-6 rounded-lg shadow-lg ring-1 ring-indigo-200 min-w-[20rem]">
     <h3 class="text-lg font-medium mb-4 text-indigo-700 border-b border-indigo-200 pb-2">Szczegóły faktury</h3>
     <p>Numer: {{ selectedInvoice.number }}</p>
+    <p>Kontrahent: {{ selectedInvoice.contractor }}</p>
+    <p>Data wystawienia: {{ selectedInvoice.issueDate }}</p>
+    <p>Termin płatności: {{ selectedInvoice.dueDate }}</p>
     <p>Kwota: {{ selectedInvoice.amount | currency:'PLN':'symbol' }}</p>
     <button type="button" (click)="closeDialog()" class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded hover:bg-indigo-700">Zamknij</button>
   </div>
