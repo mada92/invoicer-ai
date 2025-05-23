@@ -5,8 +5,7 @@ import { CommonModule } from '@angular/common';
   selector: 'app-invoice-list',
   standalone: true,
   imports: [CommonModule],
-  templateUrl: './invoice-list.component.html',
-  styleUrls: ['./invoice-list.component.scss']
+  templateUrl: './invoice-list.component.html'
 })
 export class InvoiceListComponent {
   invoices = [
