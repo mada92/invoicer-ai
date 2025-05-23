@@ -16,3 +16,23 @@ td {
 thead {
   background-color: #f8f9fa;
 }
+
+.dialog-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.invoice-dialog {
+  background: #fff;
+  padding: 1rem;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  min-width: 300px;
+}

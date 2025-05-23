@@ -18,4 +18,13 @@ describe('InvoiceListComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('should open and close invoice details', () => {
+    const invoice = { id: 99, number: 'TEST', amount: 123 };
+    component.openInvoiceDetails(invoice);
+    expect(component.selectedInvoice).toEqual(invoice);
+
+    component.closeDialog();
+    expect(component.selectedInvoice).toBeNull();
+  });
 });

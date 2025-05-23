@@ -9,9 +9,22 @@
     </thead>
     <tbody>
       <tr *ngFor="let invoice of invoices">
-        <td>{{ invoice.number }}</td>
+        <td>
+          <a href="#" (click)="openInvoiceDetails(invoice); $event.preventDefault()">
+            {{ invoice.number }}
+          </a>
+        </td>
         <td>{{ invoice.amount | currency:'PLN':'symbol' }}</td>
       </tr>
     </tbody>
   </table>
+</div>
+
+<div class="dialog-backdrop" *ngIf="selectedInvoice">
+  <div class="invoice-dialog">
+    <h3>Szczegóły faktury</h3>
+    <p>Numer: {{ selectedInvoice.number }}</p>
+    <p>Kwota: {{ selectedInvoice.amount | currency:'PLN':'symbol' }}</p>
+    <button type="button" (click)="closeDialog()">Zamknij</button>
+  </div>
 </div>
