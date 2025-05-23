@@ -1,0 +1,17 @@
+<div class="invoice-list">
+  <h2>Lista faktur</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Numer</th>
+        <th>Kwota</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let invoice of invoices">
+        <td>{{ invoice.number }}</td>
+        <td>{{ invoice.amount | currency:'PLN':'symbol' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
