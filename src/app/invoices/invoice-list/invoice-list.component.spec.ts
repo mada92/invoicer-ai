@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { InvoiceListComponent } from './invoice-list.component';
+import { InvoiceListComponent, Invoice } from './invoice-list.component';
 
 describe('InvoiceListComponent', () => {
   let component: InvoiceListComponent;
@@ -20,7 +20,14 @@ describe('InvoiceListComponent', () => {
   });
 
   it('should open and close invoice details', () => {
-    const invoice = { id: 99, number: 'TEST', amount: 123 };
+    const invoice: Invoice = {
+      id: 99,
+      number: 'TEST',
+      amount: 123,
+      contractor: 'Test Corp',
+      issueDate: '2024-01-01',
+      dueDate: '2024-01-15'
+    };
     component.openInvoiceDetails(invoice);
     expect(component.selectedInvoice).toEqual(invoice);
 
